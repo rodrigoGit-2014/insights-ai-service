@@ -23,14 +23,7 @@ class LLMService:
             messages=[{"role": "user", "content": user_prompt}],
         )
         content = response.content[0].text
-        logger.info(f"LLM raw response length: {len(content)} chars")
-        logger.info(f"LLM raw response (first 500): {content[:500]}")
         parsed = self._parse_json(content)
-        logger.info(f"LLM parsed keys: {list(parsed.keys()) if isinstance(parsed, dict) else type(parsed)}")
-        # Log cross-selling entries for debugging
-        cs = parsed.get("oportunidades_cross_selling", []) if isinstance(parsed, dict) else []
-        if cs:
-            logger.info(f"First cross-selling entry: {json.dumps(cs[0], default=str, ensure_ascii=False)[:300]}")
         usage = {
             "input_tokens": response.usage.input_tokens,
             "output_tokens": response.usage.output_tokens,
