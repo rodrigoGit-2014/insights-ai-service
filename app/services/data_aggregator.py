@@ -35,7 +35,7 @@ class DataAggregator:
         if section_id:
             apriori_params["section_id"] = section_id
 
-        async with httpx.AsyncClient(timeout=30, headers=self.headers) as client:
+        async with httpx.AsyncClient(timeout=90, headers=self.headers) as client:
             tasks = [
                 client.get(f"{self.sales_url}/sales/total", params=params),
                 client.get(f"{self.sales_url}/sales/monthly-trend", params=params),
@@ -68,7 +68,7 @@ class DataAggregator:
 
             # Fetch rules for this run
             try:
-                async with httpx.AsyncClient(timeout=30, headers=self.headers) as client:
+                async with httpx.AsyncClient(timeout=90, headers=self.headers) as client:
                     run_detail = await client.get(
                         f"{self.apriori_url}/analysis/runs/{latest_run['id']}"
                     )
