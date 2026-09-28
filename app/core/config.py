@@ -29,9 +29,9 @@ class Settings(BaseSettings):
 
     # LLM
     ANTHROPIC_API_KEY: str = Field(default="")
-    LLM_MODEL: str = Field(default="claude-sonnet-4-20250514")
-    LLM_MAX_TOKENS: int = Field(default=4096)
-    LLM_TEMPERATURE: float = Field(default=0.3)
+    LLM_MODEL: str = Field(default="claude-sonnet-5-5")
+    # Thinking tokens count toward this limit, so leave room for the JSON report.
+    LLM_MAX_TOKENS: int = Field(default=16000)
 
     # Service URLs
     SALES_SERVICE_URL: str = Field(default="http://localhost:8000/api/v1")

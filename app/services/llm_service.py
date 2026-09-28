@@ -12,17 +12,16 @@ class LLMService:
         self.client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
         self.model = settings.LLM_MODEL
         self.max_tokens = settings.LLM_MAX_TOKENS
-        self.temperature = settings.LLM_TEMPERATURE
 
     def generate(self, system: str, user_prompt: str) -> tuple:
         response = self.client.messages.create(
             model=self.model,
             max_tokens=self.max_tokens,
-            temperature=self.temperature,
             system=system,
             messages=[{"role": "user", "content": user_prompt}],
         )
-        content = response.content[0].text
+        # The response may start with a thinking block; keep only the text.
+        content = "".join(b.text for b in response.content if b.type == "text")
         parsed = self._parse_json(content)
         usage = {
             "input_tokens": response.usage.input_tokens,
@@ -34,7 +33,6 @@ class LLMService:
         with self.client.messages.stream(
             model=self.model,
             max_tokens=self.max_tokens,
-            temperature=self.temperature,
             system=system,
             messages=[{"role": "user", "content": user_prompt}],
         ) as stream:
@@ -46,7 +44,6 @@ class LLMService:
         with self.client.messages.stream(
             model=self.model,
             max_tokens=self.max_tokens,
-            temperature=0.4,
             system=system,
             messages=formatted,
         ) as stream:
